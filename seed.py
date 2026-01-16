@@ -1,12 +1,6 @@
 from config import db
 from app import app
-from models.user import User
-from models.post import Post
-from models.category import Category
-from models.comment import Comment
-from models.reaction import Reaction
-from models.admin_response import AdminResponse
-
+from models import Category, Comment, User, Post, Reaction, AdminResponse
 # Drop and create tables
 with app.app_context():
     db.drop_all()
