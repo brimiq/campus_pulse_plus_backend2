@@ -116,3 +116,62 @@ class AdminResponse(db.Model):
 
 
 
+class SecurityReport(db.Model):
+    __tablename__ = "security_report"
+
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50), nullable=False)  # theft, harassment, lights, other
+    description = db.Column(db.String(500), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+
+    user = db.relationship("User", backref="security_reports")
+
+
+
+class EscortRequest(db.Model):
+    __tablename__ = "escort_request"
+
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(300), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), default="active")  # active, fulfilled, expired
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    user = db.relationship("User", backref="escort_requests")
+
+
+class ChatMessage(db.Model):
+    __tablename__ = "chat_message"
+
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(300), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    security_report_id = db.Column(db.Integer, db.ForeignKey("security_report.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    security_report = db.relationship("SecurityReport", backref="chat_messages")
+    user = db.relationship("User", backref="chat_messages")
+
+
+
+class UniversitySettings(db.Model):
+    __tablename__ = "university_settings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), default="Campus University")
+    latitude = db.Column(db.Float, default=-1.2921)  # Nairobi default
+    longitude = db.Column(db.Float, default=36.8219)
+    zoom_level = db.Column(db.Integer, default=15)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
+
+
