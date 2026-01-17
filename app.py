@@ -101,3 +101,93 @@ def student_required(f):
 
 
    return wrapper
+
+def admin_required(f):
+   @wraps(f)
+   def wrapper(*args, **kwargs):
+       if session.get("role") != "admin":
+           return {"error": "Only admins allowed"}, 403
+       return f(*args, **kwargs)
+
+
+   return wrapper
+
+
+
+
+
+
+def is_valid_email(email):
+   return re.match(r"[^@]+@[^@]+\.[^@]+", email)
+
+
+
+
+@app.route("/auth/signup", methods=["POST"])
+@limiter.limit("5 per minute")
+def signup():
+   app.logger.info(f"Signup attempt from {request.remote_addr}")
+   try:
+       data = request.get_json()
+       if not data:
+           return {"error": "Invalid JSON"}, 400
+
+
+       email = data.get("email", "").strip()
+       password = data.get("password", "").strip()
+       if not email or not password:
+           return {"error": "Email and password required"}, 400
+       if not is_valid_email(email):
+           return {"error": "Invalid email format"}, 400
+       if len(password) < 4:
+           return {"error": "Password too short"}, 400
+       if User.query.filter_by(email=email).first():
+           return {"error": "Email already registered"}, 400
+
+
+       user = User(email=email)
+       user.set_password(password)
+       db.session.add(user)
+       db.session.commit()
+
+
+       session["user_id"] = user.id
+       session["role"] = user.role
+       app.logger.info(f"User {email} signed up successfully")
+       return {"user": {"id": user.id, "email": user.email, "role": user.role}}, 201
+   except Exception as e:
+       db.session.rollback()
+       app.logger.error(f"Signup error: {str(e)}")
+       return {"error": "Internal server error"}, 500
+@app.route("/auth/login", methods=["POST"])
+@limiter.limit("5 per minute")
+def login():
+   app.logger.info(f"Login attempt from {request.remote_addr}")
+   data = request.get_json()
+   user = User.query.filter_by(email=data.get("email")).first()
+   if user and user.check_password(data.get("password")):
+       session["user_id"] = user.id
+       session["role"] = user.role
+       app.logger.info(f"User {user.email} logged in")
+       return {"user": {"id": user.id, "email": user.email, "role": user.role}}, 200
+   app.logger.warning(f"Failed login attempt for {data.get('email')}")
+   return {"error": "Invalid credentials"}, 401
+
+
+
+
+@app.route("/auth/logout", methods=["POST"])
+def logout():
+   session.clear()
+   return {"message": "Logged out"}, 200
+
+
+
+
+@app.route("/auth/current_user", methods=["GET"])
+def current_user():
+   uid = session.get("user_id")
+   if not uid:
+       return jsonify(None)
+   user = User.query.get(uid)
+   return {"id": user.id, "email": user.email, "role": user.role}
