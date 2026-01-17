@@ -2,43 +2,43 @@
 
 A comprehensive Flask-based backend API for campus safety, engagement, and communication platform.
 
-## 🌟 Features
+## Features
 
-### 🔐 Authentication System
+### Authentication System
 - User signup and login with secure password hashing
 - Session-based authentication with role management
 - Role-based access control (Student/Admin)
 
-### 📝 Posts & Comments
+### Posts & Comments
 - Create, view, and delete posts
 - Category-based filtering
 - Anonymous commenting support
 - Like/dislike reactions system
 
-### 🏷️ Categories & Filtering
+### Categories & Filtering
 - Predefined categories for content organization
 - Admin-managed category creation and management
 - Category-based post filtering
 
-### 👮 Campus Safety Features
+### Campus Safety Features
 - **Security Reports**: Report incidents (theft, harassment, lighting issues, etc.)
 - **Escort Requests**: Request campus security escort
 - **Real-time Map Display**: Reports shown with decay-based visibility
 - **Chat System**: Anonymous chat with security for active reports
 
-### 📊 Admin Dashboard
+### Admin Dashboard
 - View all users with activity metrics
 - Manage posts and respond to student concerns
 - Analytics: category distribution, engagement metrics
 - University settings management (map center, zoom level)
 
-### 🔔 Analytics
+### Analytics
 - Category-wise post distribution
 - Engagement metrics (likes, comments)
 - User activity tracking
 - Security report statistics
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Backend**: Flask (Python)
 - **Database**: SQLAlchemy ORM
@@ -48,7 +48,7 @@ A comprehensive Flask-based backend API for campus safety, engagement, and commu
 - **Rate Limiting**: Flask-Limiter
 - **Environment**: python-dotenv
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 campus_pulse_plus_backend2/
@@ -62,7 +62,7 @@ campus_pulse_plus_backend2/
 └── README.md
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -105,7 +105,7 @@ campus_pulse_plus_backend2/
 
 The server will start at `http://localhost:5000`
 
-## 🔑 API Endpoints
+## API Endpoints
 
 ### Authentication
 | Endpoint | Method | Description | Auth |
@@ -183,7 +183,7 @@ The server will start at `http://localhost:5000`
 | `/api/university-settings` | GET | Public settings | Public |
 | `/api/admin/university-settings` | GET/PUT | Admin settings | Admin |
 
-## 📝 Request/Response Examples
+## Request/Response Examples
 
 ### Create User (Signup)
 ```json
@@ -243,7 +243,7 @@ GET /api/categories
 ]
 ```
 
-## 🔐 Environment Variables
+## Environment Variables
 
 Create a `.env` file with the following:
 
@@ -261,7 +261,7 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:5174
 PERMANENT_SESSION_LIFETIME=604800  # 7 days in seconds
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run with debug mode
@@ -270,11 +270,11 @@ python app.py
 # The API will be available at http://localhost:5000
 ```
 
-## 📄 License
+## License
 
 This project is part of the Campus Pulse Plus initiative.
 
-## 👥 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -282,11 +282,11 @@ This project is part of the Campus Pulse Plus initiative.
 4. Push to the branch
 5. Open a Pull Request
 
-## 📧 Support
+## Support
 
 For support, please contact the development team or open an issue.
 
 ---
 
-Built with ❤️ for campus safety and student engagement
+Built with love for campus safety and student engagement
 
