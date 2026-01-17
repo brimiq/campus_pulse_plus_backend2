@@ -62,3 +62,13 @@ app.config["SESSION_COOKIE_SECURE"] = False
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax" 
 app.config["SESSION_COOKIE_DOMAIN"] = None 
 app.config["SESSION_COOKIE_PATH"] = "/"
+
+CORS(
+   app,
+   supports_credentials=True,
+   origins=os.getenv(
+       "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:5175,http://127.0.0.1:5175,http://localhost:5176,http://127.0.0.1:5176,http://localhost:5177,http://127.0.0.1:5177"
+   ).split(","),
+   methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+   allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+)
