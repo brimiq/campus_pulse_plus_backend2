@@ -191,3 +191,62 @@ def current_user():
        return jsonify(None)
    user = User.query.get(uid)
    return {"id": user.id, "email": user.email, "role": user.role}
+@app.route("/api/debug-session")
+def debug_session():
+   return {
+       "session_user_id": session.get("user_id"),
+       "session_role": session.get("role"),
+       "all_session_keys": list(session.keys()),
+       "is_logged_in": "user_id" in session,
+   }
+
+
+
+
+
+
+@app.route("/api/categories", methods=["GET"])
+def get_categories():
+   categories = Category.query.all()
+   return jsonify(
+       [{"id": c.id, "name": c.name, "description": c.description} for c in categories]
+   )
+
+
+
+
+
+
+@app.route("/api/posts", methods=["GET"])
+def get_posts():
+   try:
+       category_id = request.args.get("category_id", type=int)
+       query = Post.query.order_by(Post.created_at.desc())
+       if category_id:
+           query = query.filter_by(category_id=category_id)
+
+
+       posts = query.limit(10).all()
+       data = []
+       for p in posts:
+           likes = sum(1 for r in p.reactions if r.reaction_type == "like")
+           dislikes = sum(1 for r in p.reactions if r.reaction_type == "dislike")
+           admin_response = p.admin_responses[0].content if p.admin_responses else None
+           data.append(
+               {
+                   "id": p.id,
+                   "content": p.content,
+                   "images": p.images,
+                   "category_id": p.category_id,
+                   "category_name": p.category.name,
+                   "user_id": p.user_id,
+                   "created_at": p.created_at,
+                   "likes": likes,
+                   "dislikes": dislikes,
+                   "comments_count": len(p.comments),
+                   "admin_response": admin_response,
+               }
+           )
+       return jsonify(data)
+   except Exception as e:
+       return {"error": "Internal server error"}, 500
