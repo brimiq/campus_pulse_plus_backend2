@@ -41,3 +41,45 @@ class Category(db.Model):
 
 
 
+class Post(db.Model):
+    __tablename__ = "post"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(300), nullable=False)
+    images = db.Column(db.JSON, default=[])  # Array of image URLs
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
+
+    user = db.relationship("User", back_populates="posts")
+    category = db.relationship("Category", back_populates="posts")
+
+    comments = db.relationship(
+        "Comment", back_populates="post", cascade="all, delete-orphan"
+    )
+    reactions = db.relationship(
+        "Reaction", back_populates="post", cascade="all, delete-orphan"
+    )
+    admin_responses = db.relationship(
+        "AdminResponse", back_populates="post", cascade="all, delete-orphan"
+    )
+
+
+
+class Comment(db.Model):
+    __tablename__ = "comment"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(200), nullable=False)
+    images = db.Column(db.JSON, default=[])  # Array of image URLs
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
+
+    user = db.relationship("User", back_populates="comments")
+    post = db.relationship("Post", back_populates="comments")
+
+
+
