@@ -1309,16 +1309,15 @@ def get_user_activity():
 
 
 
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    # For local development
-    app.run(host="0.0.0.0", debug=True)
-else:
-    # For production deployment (Render)
-    with app.app_context():
-        db.create_all()
+# Initialize database
+with app.app_context():
+    db.create_all()
 
-    # Get port from environment variable (Render provides this)
-    port = int(os.environ.get("PORT", 5000))
+# Check if running in production (Render provides PORT env var)
+if os.environ.get("PORT"):
+    # Production deployment (Render)
+    port = int(os.environ.get("PORT"))
     app.run(host="0.0.0.0", port=port, debug=False)
+elif __name__ == "__main__":
+    # Local development
+    app.run(host="0.0.0.0", debug=True)
