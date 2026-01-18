@@ -60,33 +60,44 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
 
 
+# --- SESSION CONFIGURATION ---
 app.config["SESSION_COOKIE_NAME"] = "campus_session"
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SECURE"] = False 
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax" 
-app.config["SESSION_COOKIE_DOMAIN"] = None 
 app.config["SESSION_COOKIE_PATH"] = "/"
 
+# Check if running on Render (Production)
+if os.environ.get("PORT"):
+    # Production: Must use Secure and SameSite=None for Vercel -> Render requests
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+else:
+    # Local development
+    app.config["SESSION_COOKIE_SECURE"] = False
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+# --- CORS CONFIGURATION ---
+ALLOWED_ORIGINS = [
+    "https://campuspulseplusfrontend-git-main-washiras-projects-fb5072e5.vercel.app",
+    "https://campuspulseplusfrontend.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174"
+]
 
 CORS(
-   app,
-   supports_credentials=True,
-   origins=os.getenv(
-       "CORS_ORIGINS","campuspulseplusfrontend-git-main-washiras-projects-fb5072e5.vercel.app, campuspulseplusfrontend.vercel.app"
-   ).split(","),
-   methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-   allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+    app,
+    supports_credentials=True,
+    origins=os.getenv("CORS_ORIGINS", ",".join(ALLOWED_ORIGINS)).split(","),
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
-
 
 db.init_app(app)
 
-
-
-
 @app.before_request
 def make_session_permanent():
-   session.permanent = True
+    session.permanent = True
 
 
 
