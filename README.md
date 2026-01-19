@@ -290,3 +290,7 @@ For support, please contact the development team or open an issue.
 
 Built with love for campus safety and student engagement
 
+FRONTEND REPO
+
+https://github.com/brimiq/campus_pulse_plus_frontend2/tree/main
+
